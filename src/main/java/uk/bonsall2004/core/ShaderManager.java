@@ -1,6 +1,7 @@
 package uk.bonsall2004.core;
 
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
@@ -40,7 +41,6 @@ public class ShaderManager {
   }
 
   public void createVertexShader(String shaderCode) throws Exception {
-    System.out.println(shaderCode);
     vertexShaderID = createShader(shaderCode, GL20.GL_VERTEX_SHADER);
   }
 
@@ -60,7 +60,7 @@ public class ShaderManager {
       throw new Exception("Error compiling shader code: Type: " + shaderType + "\n Info: "+ GL20.glGetShaderInfoLog(shaderID, 1024));
 
     GL20.glAttachShader(programID, shaderID);
-
+    GL20.glVertexAttribPointer(0, 8, GL11.GL_FLOAT, false, 8, 0);
     return shaderID;
   }
 
