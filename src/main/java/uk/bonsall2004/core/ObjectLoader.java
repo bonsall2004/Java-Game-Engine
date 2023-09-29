@@ -79,6 +79,7 @@ public class ObjectLoader {
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
     FloatBuffer buffer = storeDataInFloatBuffer(data);
     GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+    GL20.glVertexAttribPointer(attribNo, vertexCount, GL11.GL_FLOAT, false, 8, 0);
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
   }
 

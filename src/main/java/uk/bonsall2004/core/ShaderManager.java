@@ -60,7 +60,6 @@ public class ShaderManager {
       throw new Exception("Error compiling shader code: Type: " + shaderType + "\n Info: "+ GL20.glGetShaderInfoLog(shaderID, 1024));
 
     GL20.glAttachShader(programID, shaderID);
-    GL20.glVertexAttribPointer(0, 8, GL11.GL_FLOAT, false, 8, 0);
     return shaderID;
   }
 
