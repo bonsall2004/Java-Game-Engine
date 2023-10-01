@@ -22,7 +22,6 @@ public class Camera {
     }
 
     if(x != 0) {
-      System.out.println();
       position.x += (float) Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * x;
       position.z += (float) Math.cos(Math.toRadians(rotation.y - 90)) * x;
     }

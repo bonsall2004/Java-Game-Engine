@@ -168,7 +168,6 @@ public class ObjectLoader {
   private void storeDataInAttribList(int attribNo, int vertexCount, float[] data) {
     int vbo = GL15.glGenBuffers();
     vbos.add(vbo);
-    System.out.println(vertexCount);
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
     FloatBuffer buffer = storeDataInFloatBuffer(data);
     GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
