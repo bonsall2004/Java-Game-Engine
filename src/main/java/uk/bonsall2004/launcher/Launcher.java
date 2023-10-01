@@ -19,7 +19,7 @@ public class Launcher {
   }
 
   public static void main(String[] args) {
-    window = new WindowManager(Consts.TITLE, 800, 600, false);
+    window = new WindowManager(Consts.TITLE, 800, 800, false);
     game = new TestGame();
     EngineManager engine = new EngineManager();
 

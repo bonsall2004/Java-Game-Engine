@@ -26,7 +26,7 @@ public class ObjectLoader {
     int id = createVAO();
     storeIndicesBuffer(indices);
     storeDataInAttribList(0, 3, vertices);
-    storeDataInAttribList(0, 2, textureCoords);
+    storeDataInAttribList(1, 2, textureCoords);
     unbind();
     return new Model(id, indices.length);
   }
@@ -76,10 +76,11 @@ public class ObjectLoader {
   private void storeDataInAttribList(int attribNo, int vertexCount, float[] data) {
     int vbo = GL15.glGenBuffers();
     vbos.add(vbo);
+    System.out.println(vertexCount);
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
     FloatBuffer buffer = storeDataInFloatBuffer(data);
     GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-    GL20.glVertexAttribPointer(attribNo, vertexCount, GL11.GL_FLOAT, false, 8, 0);
+    GL20.glVertexAttribPointer(attribNo, vertexCount, GL11.GL_FLOAT, false, 0, 0);
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
   }
 

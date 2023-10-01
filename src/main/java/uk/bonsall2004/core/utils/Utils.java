@@ -1,7 +1,6 @@
 package uk.bonsall2004.core.utils;
 
 import org.lwjgl.system.MemoryUtil;
-
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
