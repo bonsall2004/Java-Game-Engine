@@ -19,6 +19,10 @@ public class WindowManager {
   private int width, height;
   private long window;
 
+  public long getWindowHandle() {
+    return window;
+  }
+
   private boolean resize;
   private final boolean vSync;
 
