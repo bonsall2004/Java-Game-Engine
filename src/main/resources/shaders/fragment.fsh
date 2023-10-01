@@ -42,14 +42,6 @@ uniform float specularPower;
 uniform DirectionalLight directionalLight;
 uniform PointLight pointLight;
 uniform SpotLight spotLight;
-uniform vec3 spotLight.point.colour;
-uniform vec3 spotLight.point.position;
-uniform float spotLight.point.intensity;
-uniform float spotLight.point.constant;
-uniform float spotLight.point.linear;
-uniform float spotLight.point.exponent;
-uniform vec3 spotLight.conedir;
-uniform float spotLight.cutoff;
 
 vec4 ambientC;
 vec4 diffuseC;
@@ -123,7 +115,6 @@ void main() {
     vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, fragPos, fragNormal);
     diffuseSpecularComp += calcPointLight(pointLight, fragPos, fragNormal);
 
-    // Pass the individual components directly as parameters to calcSpotLight
     vec4 spotLightPointResult = calcSpotLight(spotLight, fragPos, fragNormal, spotLight.point.position, spotLight.point.colour, spotLight.point.intensity, spotLight.point.constant, spotLight.point.linear, spotLight.point.exponent);
 
     diffuseSpecularComp += spotLightPointResult;
