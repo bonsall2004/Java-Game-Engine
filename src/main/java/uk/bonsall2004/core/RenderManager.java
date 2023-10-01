@@ -34,7 +34,7 @@ public class RenderManager {
     shader.createUniform("specularPower");
     shader.createDirectionalLightUniform("directionalLight");
     shader.createPointLightUniform("pointLight");
-    shader.createSpotLightUniform("spotLight");
+//    shader.createSpotLightUniform("spotLight");
   }
 
   public void render(Entity entity, Camera camera, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
@@ -49,7 +49,7 @@ public class RenderManager {
     shader.setUniform("specularPower", Consts.SPECULAR_POWER);
     shader.setUniform("directionalLight", directionalLight);
     shader.setUniform("pointLight", pointLight);
-    shader.setUniform("spotLight", spotLight);
+//    shader.setUniform("spotLight", spotLight);
     GL30.glBindVertexArray(entity.getModel().getId());
     GL20.glEnableVertexAttribArray(0);
     GL20.glEnableVertexAttribArray(1);

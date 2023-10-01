@@ -113,7 +113,7 @@ void main() {
 
     vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, fragPos, fragNormal);
     diffuseSpecularComp += calcPointLight(pointLight, fragPos, fragNormal);
-    diffuseSpecularComp += (calcSpotLight(spotLight, fragPos, fragNormal));
+//    diffuseSpecularComp += (calcSpotLight(spotLight, fragPos, fragNormal));
 
     fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
 }
