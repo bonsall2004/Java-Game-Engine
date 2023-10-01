@@ -48,7 +48,7 @@ vec4 diffuseC;
 vec4 specularC;
 
 void setupColours(Material material, vec2 textureCoords) {
-    if (material.hasTexture == 1) {
+    if(material.hasTexture == 1) {
         ambientC = texture(textureSampler, textureCoords);
         diffuseC = ambientC;
         specularC = ambientC;
@@ -60,8 +60,8 @@ void setupColours(Material material, vec2 textureCoords) {
 }
 
 vec4 calcLightColour(vec3 lightColour, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal) {
-    vec4 diffuseColour = vec4(0, 0, 0, 0);
-    vec4 specularColour = vec4(0, 0, 0, 0);
+    vec4 diffuseColour = vec4(0,0,0,0);
+    vec4 specularColour = vec4(0,0,0,0);
 
     float diffuseFactor = max(dot(normal, to_light_dir), 0.0f);
     diffuseColour = diffuseC * vec4(lightColour, 1.0f) * light_intensity * diffuseFactor;
@@ -87,22 +87,21 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
     vec4 lightColour = calcLightColour(light.colour, light.intensity, position, to_light_dir, normal);
 
     float _distance = length(light_dir);
-    float attenuationInv = 1.0f / (light.constant + light.linear * _distance + light.exponent * _distance * _distance);
+    float attenuationInv = light.constant + light.linear * _distance + light.exponent +  _distance * _distance;
 
-    return lightColour * attenuationInv;
+    return lightColour / attenuationInv;
 }
 
-vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal, vec3 spotLightPointPosition, vec3 spotLightPointColour, float spotLightPointIntensity, float spotLightPointConstant, float spotLightPointLinear, float spotLightPointExponent) {
-    vec3 light_dir = spotLightPointPosition - position;
+vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal) {
+    vec3 light_dir = light.point.position - position;
     vec3 to_light_dir = normalize(light_dir);
     vec3 from_light_dir = -to_light_dir;
     float spot_alpha = dot(from_light_dir, normalize(light.conedir));
 
-    vec4 colour = vec4(0, 0, 0, 0);
+    vec4 colour = vec4(0,0,0,0);
 
-    if (spot_alpha > light.cutoff) {
-        PointLight pointLight = PointLight(spotLightPointColour, spotLightPointPosition, spotLightPointIntensity, spotLightPointConstant, spotLightPointLinear, spotLightPointExponent);
-        colour = calcPointLight(pointLight, position, normal);
+    if(spot_alpha > light.cutoff) {
+        colour = calcPointLight(light.point, position, normal);
         colour *= (1.0f - (1.0f - spot_alpha) / (1.0f - light.cutoff));
     }
 
@@ -114,10 +113,7 @@ void main() {
 
     vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, fragPos, fragNormal);
     diffuseSpecularComp += calcPointLight(pointLight, fragPos, fragNormal);
-
-    vec4 spotLightPointResult = calcSpotLight(spotLight, fragPos, fragNormal, spotLight.point.position, spotLight.point.colour, spotLight.point.intensity, spotLight.point.constant, spotLight.point.linear, spotLight.point.exponent);
-
-    diffuseSpecularComp += spotLightPointResult;
+    diffuseSpecularComp += (calcSpotLight(spotLight, fragPos, fragNormal));
 
     fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
 }
