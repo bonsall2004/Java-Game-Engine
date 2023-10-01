@@ -5,6 +5,8 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
+import uk.bonsall2004.core.entity.Material;
+import uk.bonsall2004.core.lighting.DirectionalLight;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +37,13 @@ public class ShaderManager {
     try(MemoryStack stack = MemoryStack.stackPush()) {
       GL20.glUniformMatrix4fv(uniforms.get(uniformName), false, value.get(stack.mallocFloat(16)));
     }
+  }
+  public void setUniform(String uniformName, Material material) {
+    setUniform(uniformName + ".ambient", material.getAmbientColour());
+    setUniform(uniformName + ".diffuse", material.getDiffuseColour());
+    setUniform(uniformName + ".specular", material.getSpecularColour());
+    setUniform(uniformName + ".hasTexture", material.hasTexture() ? 1 : 0);
+    setUniform(uniformName + ".reflectance", material.getReflectance());
   }
 
   public void setUniform(String uniformName, int value) {
@@ -80,6 +89,26 @@ public class ShaderManager {
 
     GL20.glAttachShader(programID, shaderID);
     return shaderID;
+  }
+
+  public void createMaterialUniform(String uniformName)  throws Exception {
+    createUniform(uniformName + ".ambient");
+    createUniform(uniformName + ".diffuse");
+    createUniform(uniformName + ".specular");
+    createUniform(uniformName + ".hasTexture");
+    createUniform(uniformName + ".reflectance");
+  }
+
+  public void createDirectionalLightUniform(String uniformName) throws Exception {
+    createUniform(uniformName +".colour");
+    createUniform(uniformName +".direction");
+    createUniform(uniformName +".intensity");
+  }
+
+  public void setUniform(String uniformName, DirectionalLight directionalLight) {
+    setUniform(uniformName + ".colour", directionalLight.getColour());
+    setUniform(uniformName + ".direction", directionalLight.getDirection());
+    setUniform(uniformName + ".intensity", directionalLight.getIntensity());
   }
 
   public void link() throws Exception {

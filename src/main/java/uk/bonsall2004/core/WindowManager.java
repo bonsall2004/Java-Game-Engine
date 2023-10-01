@@ -7,14 +7,11 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
+import uk.bonsall2004.core.utils.Consts;
 
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
 public class WindowManager {
-  public static final float FOV = (float) Math.toRadians(60);
-  public static final float Z_Near = 0.01f;
-  public static final float Z_Far = 1000f;
-
   private final String title;
   private int width, height;
   private long window;
@@ -103,6 +100,8 @@ public class WindowManager {
     GL11.glClearColor(0f, 0f, 0f, 0f);
     GL11.glEnable(GL11.GL_DEPTH_TEST);
     GL11.glEnable(GL11.GL_STENCIL_TEST);
+    GL11.glEnable(GL11.GL_CULL_FACE);
+    GL11.glEnable(GL11.GL_BACK);
   }
 
   public void update() {
@@ -146,12 +145,12 @@ public class WindowManager {
 
   public Matrix4f updateProjectionMatrix() {
     float aspectRatio = (float) width / height;
-    return projectionMatrix.setPerspective(FOV, aspectRatio, Z_Near, Z_Far);
+    return projectionMatrix.setPerspective(Consts.FOV, aspectRatio, Consts.Z_NEAR, Consts.Z_FAR);
   }
 
   public Matrix4f updateProjectionMatrix(Matrix4f matrix, int width, int height) {
     float aspectRatio = (float) width / height;
-    return matrix.setPerspective(FOV, aspectRatio, Z_Near, Z_Far);
+    return matrix.setPerspective(Consts.FOV, aspectRatio, Consts.Z_NEAR, Consts.Z_FAR);
   }
 
   public void setTitle(String title) {

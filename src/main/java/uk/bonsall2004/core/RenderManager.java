@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import uk.bonsall2004.core.entity.Entity;
+import uk.bonsall2004.core.lighting.DirectionalLight;
+import uk.bonsall2004.core.utils.Consts;
 import uk.bonsall2004.core.utils.Transformation;
 import uk.bonsall2004.core.utils.Utils;
 import uk.bonsall2004.launcher.Launcher;
@@ -25,23 +27,33 @@ public class RenderManager {
     shader.createUniform("transformationMatrix");
     shader.createUniform("projectionMatrix");
     shader.createUniform("viewMatrix");
+    shader.createUniform("ambientLight");
+    shader.createMaterialUniform("material");
+    shader.createUniform("specularPower");
+    shader.createDirectionalLightUniform("directionalLight");
   }
 
-  public void render(Entity entity, Camera camera) {
+  public void render(Entity entity, Camera camera, DirectionalLight directionalLight) {
     clear();
     shader.bind();
     shader.setUniform("textureSampler", 0);
     shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
     shader.setUniform("projectionMatrix", window.updateProjectionMatrix());
     shader.setUniform("viewMatrix", Transformation.getViewMatrix(camera));
+    shader.setUniform("material", entity.getModel().getMaterial());
+    shader.setUniform("ambientLight", Consts.AMBIENT_LIGHT);
+    shader.setUniform("specularPower", Consts.SPECULAR_POWER);
+    shader.setUniform("directionalLight", directionalLight);
     GL30.glBindVertexArray(entity.getModel().getId());
     GL20.glEnableVertexAttribArray(0);
     GL20.glEnableVertexAttribArray(1);
+    GL20.glEnableVertexAttribArray(2);
     GL13.glActiveTexture(GL13.GL_TEXTURE0);
     GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.getModel().getTexture().getId());
     GL11.glDrawElements(GL11.GL_TRIANGLES, entity.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
     GL20.glDisableVertexAttribArray(0);
     GL20.glDisableVertexAttribArray(1);
+    GL20.glDisableVertexAttribArray(2);
     GL30.glBindVertexArray(0);
     shader.unbind();
   }
