@@ -1,5 +1,8 @@
 #version 400 core
 
+const int MAX_POINT_LIGHT = 5;
+const int MAX_SPOT_LIGHT = 5;
+
 in vec2 fragTextureCoord;
 in vec3 fragNormal;
 in vec3 fragPos;
@@ -40,8 +43,8 @@ uniform Material material;
 uniform vec3 ambientLight;
 uniform float specularPower;
 uniform DirectionalLight directionalLight;
-uniform PointLight pointLight;
-uniform SpotLight spotLight;
+uniform PointLight pointLights[MAX_POINT_LIGHT];
+uniform SpotLight spotLights[MAX_SPOT_LIGHT];
 
 vec4 ambientC;
 vec4 diffuseC;
@@ -104,7 +107,6 @@ vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal) {
         colour = calcPointLight(light.point, position, normal);
         colour *= (1.0f - (1.0f - spot_alpha) / (1.0f - light.cutoff));
     }
-
     return colour;
 }
 
@@ -112,8 +114,18 @@ void main() {
     setupColours(material, fragTextureCoord);
 
     vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, fragPos, fragNormal);
-    diffuseSpecularComp += calcPointLight(pointLight, fragPos, fragNormal);
-//    diffuseSpecularComp += (calcSpotLight(spotLight, fragPos, fragNormal));
+
+    for(int i = 0; i < MAX_POINT_LIGHT; i++) {
+        if(pointLights[i].intensity > 0) {
+            diffuseSpecularComp += calcPointLight(pointLights[i], fragPos, fragNormal);
+        }
+    }
+
+    for(int i = 0; i < MAX_SPOT_LIGHT; i++) {
+        if(spotLights[i].point.intensity > 0) {
+            diffuseSpecularComp += (calcSpotLight(spotLights[i], fragPos, fragNormal));
+        }
+    }
 
     fragColour = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
 }
