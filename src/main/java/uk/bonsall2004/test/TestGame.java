@@ -7,15 +7,17 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import uk.bonsall2004.core.*;
 import uk.bonsall2004.core.entity.Entity;
+import uk.bonsall2004.core.entity.Material;
 import uk.bonsall2004.core.entity.Model;
 import uk.bonsall2004.core.entity.Texture;
+import uk.bonsall2004.core.entity.terrain.Terrain;
 import uk.bonsall2004.core.lighting.DirectionalLight;
 import uk.bonsall2004.core.lighting.PointLight;
 import uk.bonsall2004.core.lighting.SpotLight;
+import uk.bonsall2004.core.rendering.RenderManager;
 import uk.bonsall2004.core.utils.Consts;
 import uk.bonsall2004.launcher.Launcher;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class TestGame implements ILogic {
   private final WindowManager window;
 
   private List<Entity> entities;
+  private List<Terrain> terrains;
   private final Camera camera;
 
   Vector3f cameraInc;
@@ -47,12 +50,16 @@ public class TestGame implements ILogic {
   @Override
   public void init() throws Exception {
     renderer.init();
-    Model model = loader.loadOBJModel("/models/bunny.obj");
+    Model model = loader.loadOBJModel("/models/cube.obj");
     model.setTexture(new Texture(loader.loadTexture("textures/sand.png")));
+
+    terrains = new ArrayList<>();
+    Terrain terrain = new Terrain(new Vector3f(0, -1, -800), loader, new Material(new Texture(loader.loadTexture("textures/sand.png")), 0.1f));
+    terrains.add(terrain);
 
     entities = new ArrayList<>();
     Random rnd = new Random();
-    for(int i = 0; i < 200; i++) {
+    for(int i = 0; i < 10; i++) {
       float x = rnd.nextFloat() * 100 - 50;
       float y = rnd.nextFloat() * 100 - 50;
       float z = rnd.nextFloat() * -300;
@@ -124,8 +131,32 @@ public class TestGame implements ILogic {
 
     }
 
+    lightAngle += 1.05f;
+    if (lightAngle > 90) {
+      directionalLight.setIntensity(0);
+      if(lightAngle >= 360)
+        lightAngle = -90;
+    } else if(lightAngle <= -80 || lightAngle >= 80) {
+      float factor = 1 - (Math.abs(lightAngle) - 80) / 10.0f;
+      directionalLight.setIntensity(factor+2);
+      directionalLight.getColour().y = Math.max(factor, 0.9f);
+      directionalLight.getColour().z = Math.max(factor, 0.5f);
+    } else {
+      directionalLight.setIntensity(1);
+      directionalLight.getColour().x = 1;
+      directionalLight.getColour().y = 1;
+      directionalLight.getColour().z = 1;
+    }
+    double angRad = Math.toRadians(lightAngle);
+    directionalLight.getDirection().x = (float) Math.sin(angRad);
+    directionalLight.getDirection().y = (float) Math.cos(angRad);
+
     for(Entity entity : entities) {
       renderer.processEntity(entity);
+    }
+
+    for(Terrain terrain : terrains) {
+      renderer.processTerrain(terrain);
     }
   }
 

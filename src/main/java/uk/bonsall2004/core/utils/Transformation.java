@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import uk.bonsall2004.core.Camera;
 import uk.bonsall2004.core.entity.Entity;
+import uk.bonsall2004.core.entity.terrain.Terrain;
 
 public class Transformation {
   public static Matrix4f createTransformationMatrix(Entity entity) {
@@ -16,6 +17,13 @@ public class Transformation {
     return matrix;
   }
 
+
+  public static Matrix4f createTransformationMatrix(Terrain terrain) {
+    Matrix4f matrix = new Matrix4f();
+    matrix.identity().translate(terrain.getPosition()).scale(1);
+    return matrix;
+  }
+
   public static Matrix4f getViewMatrix(Camera camera) {
     Vector3f pos = camera.getPosition();
     Vector3f rot = camera.getRotation();
@@ -25,4 +33,5 @@ public class Transformation {
     matrix.translate(-pos.x, -pos.y, -pos.z);
     return matrix;
   }
+
 }
